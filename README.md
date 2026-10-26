@@ -49,20 +49,6 @@ Quanto maior e mais variado o texto de treino, mais parecido com a língua origi
 2. **Sorteio** (`escolher_proxima_letra`): dada a letra atual, sorteia a próxima, com mais chance para as que apareceram mais vezes.
 3. **Geração** (`gerar_texto`): repete o sorteio várias vezes, usando sempre a última letra gerada como base.
 
-## Do bigrama ao GPT
-
-Este modelo só olha para **uma** letra de contexto e aprende por **contagem**. Os modelos modernos seguem a mesma ideia central, mas olham para muito mais contexto e aprendem com redes neurais. Uma trilha natural de estudo:
-
-1. **Bigrama por contagem** (este repositório)
-2. **Rede neural simples** com embeddings (MLP)
-3. **Transformer pequeno** com auto-atenção (mini-GPT)
-
-Vídeos do Andrej Karpathy que cobrem essa trilha, em inglês:
-
-1. [The spelled-out intro to language modeling: building makemore](https://www.youtube.com/watch?v=PaCmpygFfXo)
-2. [Building makemore Part 2: MLP](https://www.youtube.com/watch?v=TCH_1BHY58I)
-3. [Let's build GPT: from scratch, in code, spelled out](https://www.youtube.com/watch?v=kCc8FmEb1nY)
-
 ## Licença
 
 [MIT](LICENSE)
