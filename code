@@ -1,1 +1,87 @@
+"""
+Modelo de linguagem simples: bigrama de caracteres
 
+Uso:
+    python modelo_linguagem_simples.py
+    python modelo_linguagem_simples.py --inicio r --tamanho 300 --semente 42
+
+Requisitos: apenas Python 3.8+ (nenhuma biblioteca externa).
+"""
+
+import argparse
+import random
+
+TEXTO_TREINO = """
+a raposa marrom pula sobre o cachorro preguicoso
+o cachorro preguicoso dorme perto da lareira
+a raposa corre rapido pela floresta escura
+o sol nasce sobre a floresta e a raposa acorda
+o cachorro acorda e late para a raposa
+a raposa foge rapido para dentro da floresta
+"""
+
+
+def treinar(texto):
+    """Conta quantas vezes cada letra aparece logo depois de outra.
+
+    Retorna um dicionário no formato:
+        {letra_atual: {proxima_letra: quantidade_de_vezes}}
+
+    Exemplo: contagens["a"]["r"] é quantas vezes "r" veio depois de "a".
+    """
+    texto = texto.lower()
+    contagens = {}
+
+    for atual, proxima in zip(texto, texto[1:]):
+        proximas = contagens.setdefault(atual, {})
+        proximas[proxima] = proximas.get(proxima, 0) + 1
+
+    return contagens
+
+
+def escolher_proxima_letra(contagens, letra_atual):
+    """Sorteia a próxima letra, dando mais chance às mais frequentes."""
+    if letra_atual not in contagens:
+        # Letra nunca vista no treino: escolhe qualquer letra conhecida
+        return random.choice(list(contagens))
+
+    letras = list(contagens[letra_atual])
+    pesos = list(contagens[letra_atual].values())
+    return random.choices(letras, weights=pesos, k=1)[0]
+
+
+def gerar_texto(contagens, letra_inicial, tamanho=100):
+    """Gera `tamanho` letras novas a partir de `letra_inicial`."""
+    texto = letra_inicial
+
+    for _ in range(tamanho):
+        texto += escolher_proxima_letra(contagens, texto[-1])
+
+    return texto
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Gera texto com um modelo de bigrama de caracteres."
+    )
+    parser.add_argument("--arquivo", help="arquivo .txt para treinar (padrão: texto de exemplo)")
+    parser.add_argument("--inicio", default="a", help="letra inicial (padrão: a)")
+    parser.add_argument("--tamanho", type=int, default=200, help="quantidade de letras a gerar")
+    parser.add_argument("--semente", type=int, help="número fixo para obter sempre o mesmo resultado")
+    args = parser.parse_args()
+
+    if args.semente is not None:
+        random.seed(args.semente)
+
+    if args.arquivo:
+        with open(args.arquivo, "r", encoding="utf-8") as f:
+            texto = f.read()
+    else:
+        texto = TEXTO_TREINO
+
+    contagens = treinar(texto)
+    print(gerar_texto(contagens, args.inicio.lower(), args.tamanho))
+
+
+if __name__ == "__main__":
+    main()
